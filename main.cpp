@@ -1,0 +1,122 @@
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
+using namespace std;
+
+int main() {
+    ifstream fin("prog.txt");
+    if (!fin) {
+        cerr << "Error opening prog.txt\n";
+        return 1;
+    }
+
+    // Read in instructions
+    vector<string> instructions;
+    string line;
+    while (getline(fin, line))
+        if (!line.empty())
+            instructions.push_back(line);
+    fin.close();
+
+    // Register & PC init
+    vector<int> r(16, 0);
+    int pc = 0;
+
+    while (pc >= 0 && pc < instructions.size()) {
+        istringstream iss(instructions[pc]);
+        string op;
+        iss >> op;
+
+        // arithmetic / bitwise ops
+        if (op == "add" || op == "sub" || op == "mul" ||
+            op == "bor" || op == "band") {
+            int d, a, b;
+            if (!(iss >> d >> a >> b)) {
+                cerr << "Parse error at instruction " << pc << "\n";
+                pc++;
+                continue;
+            }
+            // check register bounds.
+            if (d < 0 || d >= 16 || a < 0 || a >= 16 || b < 0 || b >= 16) {
+                cerr << "Register out-of-bound at instruction " << pc << "\n";
+                pc++;
+                continue;
+            }
+            if (op == "add")
+                r[d] = r[a] + r[b];
+            else if (op == "sub")
+                r[d] = r[a] - r[b];
+            else if (op == "mul")
+                r[d] = r[a] * r[b];
+            else if (op == "bor")
+                r[d] = r[a] | r[b];
+            else if (op == "band")
+                r[d] = r[a] & r[b];
+        }
+        // shift ops
+        else if (op == "shl" || op == "shr") {
+            int d, a;
+            if (!(iss >> d >> a)) {
+                cerr << "Parse error at instruction " << pc << "\n";
+                pc++;
+                continue;
+            }
+            if (d < 0 || d >= 16 || a < 0 || a >= 16) {
+                cerr << "Register out-of-bound at instruction " << pc << "\n";
+                pc++;
+                continue;
+            }
+            int shiftAmt = r[a];
+            if (op == "shl")
+                r[d] = r[d] << shiftAmt;
+            else // "shr"
+                r[d] = r[d] >> shiftAmt;
+        }
+        else if (op == "li") {
+            int d, imm;
+            if (!(iss >> d >> imm)) {
+                cerr << "Parse error at instruction " << pc << "\n";
+                pc++;
+                continue;
+            }
+            if (d < 0 || d >= 16) {
+                cerr << "Register out-of-bound at instruction " << pc << "\n";
+                pc++;
+                continue;
+            }
+            r[d] = imm;
+        }
+        // conditional jumps.
+        else if (op == "jz" || op == "jp") {
+            int a, offset;
+            if (!(iss >> a >> offset)) {
+                cerr << "Parse error at instruction " << pc << "\n";
+                pc++;
+                continue;
+            }
+            if (a < 0 || a >= 16) {
+                cerr << "Register out-of-bound at instruction " << pc << "\n";
+                pc++;
+                continue;
+            }
+            bool doJump = (op == "jz" && r[a] == 0) ||
+                          (op == "jp" && r[a] > 0);
+            if (doJump) {
+                pc += offset;
+                continue; //Don't increment PC
+            }
+        }
+        else {
+            cerr << "Unknown instruction '" << op << "' at line " << pc << "\n";
+        }
+        pc++;
+    }
+
+    // Output register values.
+    for (int i = 0; i < 16; i++)
+        cout << "r[" << i << "] = " << r[i] << "\n";
+
+    return 0;
+}
