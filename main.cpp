@@ -38,7 +38,6 @@ int main() {
                 pc++;
                 continue;
             }
-            // check register bounds.
             if (d < 0 || d >= 16 || a < 0 || a >= 16 || b < 0 || b >= 16) {
                 cerr << "Register out-of-bound at instruction " << pc << "\n";
                 pc++;
@@ -74,6 +73,7 @@ int main() {
             else // "shr"
                 r[d] = r[d] >> shiftAmt;
         }
+        // load immediate
         else if (op == "li") {
             int d, imm;
             if (!(iss >> d >> imm)) {
@@ -105,7 +105,7 @@ int main() {
                           (op == "jp" && r[a] > 0);
             if (doJump) {
                 pc += offset;
-                continue; //Don't increment PC
+                continue; // Don't increment PC
             }
         }
         else {
@@ -114,7 +114,7 @@ int main() {
         pc++;
     }
 
-    // Output register values.
+    // register values.
     for (int i = 0; i < 16; i++)
         cout << "r[" << i << "] = " << r[i] << "\n";
 
