@@ -8,6 +8,8 @@ Screw that.
 # Usage instructions
 
 First compile the program with `g++ main.cpp`
-Create your test program and put it into `prog.txt` (There is an example there already)
-Run with `./a.out`
+Create your test program and save it in a file e.g. prog.txt (There is an example there already)
+Run with `./a.out <file> <optional register initial values>`
+To run the test file would be `./a.out prog.txt`
+In your optional register values they are just separated by commas e.g. `10,2` 
 Enjoy.

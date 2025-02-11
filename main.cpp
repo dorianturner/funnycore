@@ -5,25 +5,45 @@
 #include <vector>
 using namespace std;
 
-int main() {
-    ifstream fin("prog.txt");
+int main(int argc, char* argv[]) {
+    if (argc < 2) {
+        cerr << "Usage: " << argv[0] << " filename [init_reg_values]\n";
+        return 1;
+    }
+    
+    // choose your file
+    string filename = argv[1];
+    ifstream fin(filename);
     if (!fin) {
-        cerr << "Error opening prog.txt\n";
+        cerr << "Error opening " << filename << "\n";
         return 1;
     }
 
-    // Read in instructions
+    // init registers and values (if given), also pc
     vector<string> instructions;
     string line;
     while (getline(fin, line))
         if (!line.empty())
             instructions.push_back(line);
     fin.close();
-
-    // Register & PC init
     vector<int> r(16, 0);
-    int pc = 0;
 
+    if (argc >= 3) {
+        string initRegs = argv[2];
+        stringstream ss(initRegs);
+        string token;
+        int regIndex = 0;
+        while (getline(ss, token, ',') && regIndex < 16) {
+            try {
+                r[regIndex] = stoi(token);
+            } catch (const invalid_argument&) {
+                cerr << "Invalid initial register value: " << token << "\n";
+            }
+            regIndex++;
+        }
+    }
+
+    int pc = 0;
     while (pc >= 0 && pc < instructions.size()) {
         istringstream iss(instructions[pc]);
         string op;
@@ -88,7 +108,7 @@ int main() {
             }
             r[d] = imm;
         }
-        // conditional jumps.
+        // conditional jumps
         else if (op == "jz" || op == "jp") {
             int a, offset;
             if (!(iss >> a >> offset)) {
@@ -105,7 +125,7 @@ int main() {
                           (op == "jp" && r[a] > 0);
             if (doJump) {
                 pc += offset;
-                continue; // Don't increment PC
+                continue; // Skip the normal PC increment.
             }
         }
         else {
@@ -114,7 +134,7 @@ int main() {
         pc++;
     }
 
-    // register values.
+    // register output
     for (int i = 0; i < 16; i++)
         cout << "r[" << i << "] = " << r[i] << "\n";
 
