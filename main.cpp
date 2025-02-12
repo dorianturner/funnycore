@@ -44,6 +44,7 @@ int main(int argc, char* argv[]) {
     }
 
     int pc = 0;
+    int total_cycles = 0;
     while (pc >= 0 && pc < instructions.size()) {
         istringstream iss(instructions[pc]);
         string op;
@@ -63,16 +64,22 @@ int main(int argc, char* argv[]) {
                 pc++;
                 continue;
             }
-            if (op == "add")
+            if (op == "add") {
                 r[d] = r[a] + r[b];
-            else if (op == "sub")
+                total_cycles += 1;
+            } else if (op == "sub") {
                 r[d] = r[a] - r[b];
-            else if (op == "mul")
+                total_cycles += 1;
+            } else if (op == "mul") {
                 r[d] = r[a] * r[b];
-            else if (op == "bor")
+                total_cycles += 3;
+            } else if (op == "bor") {
                 r[d] = r[a] | r[b];
-            else if (op == "band")
+                total_cycles += 1;
+            } else if (op == "band") {
                 r[d] = r[a] & r[b];
+                total_cycles += 1;
+            }
         }
         // shift ops
         else if (op == "shl" || op == "shr") {
@@ -88,10 +95,13 @@ int main(int argc, char* argv[]) {
                 continue;
             }
             int shiftAmt = r[a];
-            if (op == "shl")
+            if (op == "shl") {
                 r[d] = r[d] << shiftAmt;
-            else // "shr"
+                total_cycles += 1;
+            } else { // "shr"
                 r[d] = r[d] >> shiftAmt;
+                total_cycles += 1;
+            }
         }
         // load immediate
         else if (op == "li") {
@@ -107,6 +117,7 @@ int main(int argc, char* argv[]) {
                 continue;
             }
             r[d] = imm;
+            total_cycles += 1;
         }
         // conditional jumps
         else if (op == "jz" || op == "jp") {
@@ -124,6 +135,7 @@ int main(int argc, char* argv[]) {
             bool doJump = (op == "jz" && r[a] == 0) ||
                           (op == "jp" && r[a] > 0);
             if (doJump) {
+                total_cycles += 3;
                 pc += offset;
                 continue; // Skip the normal PC increment.
             }
@@ -135,6 +147,7 @@ int main(int argc, char* argv[]) {
     }
 
     // register output
+    cout << "Your program took " << total_cycles << " cycles." << endl;
     for (int i = 0; i < 16; i++)
         cout << "r[" << i << "] = " << r[i] << "\n";
 

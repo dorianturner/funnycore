@@ -15,6 +15,6 @@ Run with `./a.out <file> <optional register initial values>`
 
 To run the test file would be `./a.out prog.txt`
 
-In your optional register values they are just separated by commas e.g. `10,2` 
+In your optional register values they are just separated by commas e.g. `10,2` with no spaces
 
 Enjoy.
