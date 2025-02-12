@@ -7,14 +7,28 @@ Screw that.
 
 # Usage instructions
 
-First compile the program with `g++ main.cpp`
+First compile the program with `g++ main.cpp -o interpreter`
 
 Create your test program and save it in a file e.g. prog.txt (There is an example there already)
 
-Run with `./a.out <file> <optional register initial values>`
+Run with `./interpreter <file> <optional register initial values>`
 
 To run the test file would be `./a.out prog.txt`
 
 In your optional register values they are just separated by commas e.g. `10,2` with no spaces
 
 Enjoy.
+
+# Testing your solution
+
+Compile the testing file division_tests with `g++ division_tests.cpp -o tests`
+
+Run tests similarly to above with `./tests <file>`
+
+Should see an output similar to this if you did it right
+
+```
+Tested 40 valid cases.
+Average cycles: 1041.25
+```
+
