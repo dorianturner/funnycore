@@ -13,7 +13,7 @@ Create your test program and save it in a file e.g. prog.txt (There is an exampl
 
 Run with `./interpreter <file> <optional register initial values>`
 
-To run the example file would be `./test prog.txt`
+To run the example file would be `./interpreter prog.txt`
 
 In your optional register values they are just separated by commas e.g. `10,2` with no spaces
 
