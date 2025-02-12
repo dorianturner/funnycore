@@ -28,6 +28,7 @@ Run tests similarly to above with `./tests <file>`
 Should see an output similar to this if you did it right
 
 ```
+PASS: 12,8 -> Quotient: 1, Remainder: 4
 Tested 40 valid cases.
 Average cycles: 1041.25
 ```
