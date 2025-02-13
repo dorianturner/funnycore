@@ -1,0 +1,11 @@
+li 4 1
+li 5 0
+add 6 0 5
+add 7 1 5
+sub 6 6 7
+add 2 2 4
+jp 6 -2
+jz 6 4
+sub 2 2 4
+add 6 6 7
+add 3 3 6
